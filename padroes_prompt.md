@@ -161,6 +161,97 @@ Bloco 4: Emita decisão final e recomendação operacional.
 URL: http://microsoft-login-verification-alerts.xyz/security-check
 ```
 
+## Boas Práticas Complementares
+
+Além dos padrões de *prompting*, a documentação da Anthropic destaca práticas de escrita de prompt que melhoram bastante a qualidade da resposta, independentemente do padrão escolhido.
+
+### 1. Seja claro e direto
+
+O modelo responde melhor quando a instrução é explícita, específica e sem ambiguidade. Em vez de esperar que ele “entenda a intenção”, é melhor declarar com precisão:
+
+- o objetivo da tarefa;
+- o formato esperado da resposta;
+- as restrições mais importantes;
+- os critérios de qualidade.
+
+Em outras palavras, se uma pessoa com pouco contexto ficaria confusa ao ler o prompt, o modelo provavelmente também ficará.
+
+### 2. Explique o contexto e a motivação
+
+Não basta dizer *o que* fazer; muitas vezes ajuda dizer *por que* aquilo importa. Quando o modelo entende o contexto de uso, ele tende a produzir respostas mais alinhadas com a necessidade real.
+
+No caso da análise de URLs, por exemplo, informar que a resposta será usada por um analista para decidir se uma URL pode ser liberada no firewall ajuda o modelo a priorizar segurança, rastreabilidade e objetividade.
+
+### 3. Use exemplos de forma estratégica
+
+No *few-shot prompting*, a qualidade dos exemplos importa tanto quanto a quantidade. A recomendação prática é usar exemplos:
+
+- relevantes para o caso real;
+- variados o suficiente para cobrir casos limítrofes;
+- consistentes no formato de entrada e saída.
+
+Quando possível, vale incluir entre 3 e 5 exemplos bons, em vez de apenas um ou dois exemplos pouco representativos.
+
+### 4. Estruture o prompt em blocos bem definidos
+
+Uma das recomendações mais fortes da Anthropic é separar partes diferentes do prompt com marcações claras. Em contextos simples, isso pode ser feito com títulos em Markdown. Em cenários mais técnicos ou com automação, pode ser feito com tags como:
+
+```text
+<role>
+<context>
+<instructions>
+<examples>
+<input>
+<output_format>
+```
+
+Essa separação reduz ambiguidades e ajuda o modelo a distinguir instruções, contexto, exemplos e dados de entrada.
+
+### 5. Defina o papel do modelo
+
+Indicar um papel melhora foco, tom e critérios de decisão. Por exemplo:
+
+```text
+Você é um analista sênior de cibersegurança especializado em triagem de URLs suspeitas.
+```
+
+Isso não substitui instruções claras, mas complementa o prompt ao orientar a postura esperada do modelo.
+
+### 6. Peça verificação antes da resposta final
+
+Uma prática valiosa é pedir ao modelo que revise a própria resposta antes de concluí-la. Isso é próximo de *self-criticism*, mas pode ser usado mesmo fora desse padrão.
+
+Exemplo:
+
+```text
+Antes de finalizar, verifique se sua decisão está consistente com os indicadores de risco identificados.
+```
+
+Essa simples etapa reduz erros de coerência e melhora a confiabilidade da saída.
+
+### 7. Em tarefas com muito contexto, organize a informação com cuidado
+
+Quando o prompt trabalha com muitos dados, documentos ou evidências, a ordem importa. Uma prática recomendada é:
+
+- colocar os dados longos antes;
+- deixar a pergunta ou instrução principal mais ao final;
+- pedir que o modelo fundamente a conclusão com trechos concretos das evidências.
+
+Isso é especialmente útil em tarefas de análise, investigação e revisão documental.
+
+### 8. Controle explicitamente o formato da resposta
+
+Em vez de dizer apenas o que não quer, é melhor dizer exatamente como a saída deve ser. Por exemplo:
+
+```text
+Responda no formato:
+Decisão: LIBERAR ou BLOQUEAR
+Risco: Baixo, Médio ou Alto
+Justificativa: até 3 linhas
+```
+
+Esse tipo de instrução tende a funcionar melhor do que pedidos vagos como “seja objetivo” ou “responda bem formatado”.
+
 ## Conclusão
 
 Esses padrões não são excludentes. Em cenários reais, é comum combinar técnicas, por exemplo:
@@ -168,4 +259,4 @@ Esses padrões não são excludentes. Em cenários reais, é comum combinar téc
 - **Thought Generation + Self-criticism** para melhorar precisão em problemas complexos.
 - **Ensembling** como camada final de validação em respostas críticas.
 
-Uma estratégia prática é começar com **zero-shot**, medir qualidade e evoluir para padrões mais sofisticados conforme a complexidade da tarefa.
+Uma estratégia prática é começar com **zero-shot**, medir qualidade e evoluir para padrões mais sofisticados conforme a complexidade da tarefa. Ao mesmo tempo, vale aplicar desde o início boas práticas como **clareza**, **contexto**, **papel**, **exemplos bem escolhidos**, **estrutura explícita** e **formato de saída controlado**.
